@@ -6,6 +6,7 @@
 package com.ipn.mx.modelo.dao;
 
 import com.ipn.mx.modelo.dto.ProductoDTO;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -22,12 +23,112 @@ import java.util.logging.Logger;
  */
 public class ProductoDAO {
     
-    private static final String SQL_INSERT="insert into Producto (nombreProducto, descripcionProducto, precio, existencia, stockMinimo, claveCategoria)"
-            + " values (?,?,?,?,?,?)";
-    private static final String SQL_UPDATE="update Producto set nombreProducto = ?, descripcionProducto = ?, precio = ?, existencia = ?, stockMinimo = ?, claveCategoria = ? where idProducto = ?";
-    private static final String SQL_DELETE="delete from Producto where idProducto = ?";
-    private static final String SQL_READ="select idProducto, nombreProducto, descripcionProducto, precio, existencia, stockMinimo, claveCategoria from Producto where idProducto = ?";
-    private static final String SQL_READ_ALL="select idProducto, nombreProducto, descripcionProducto, precio, existencia, stockMinimo, claveCategoria from Producto";
+    /*
+    SCRIPT DE BASE DE DATOS:
+
+        create table Producto(
+                idProducto serial primary key,
+                nombreProducto varchar(50) not null,
+                descripcionProducto varchar(50) not null,
+                precio float not null,
+                existencia int not null,
+                stockMinimo int not null,
+                claveCategoria int not null,
+                foreign key(claveCategoria) references Categoria(idCategoria) on update cascade on delete cascade
+        );
+    
+    STORE PROCEDURES:
+    ============================================================================
+    
+        create or replace function seleccionaTodoProducto() returns Table(
+            idProducto int,
+            nombreProducto varchar,
+            descripcionProducto varchar,
+            precio float, 
+            existencia int, 
+            stockMinimo int, 
+            claveCategoria int
+        ) as $$
+                select * from Producto;
+        $$ language sql
+
+        select seleccionaTodoProducto();
+    
+    ============================================================================
+    
+    create or replace procedure spInsertarProducto(
+            nombre varchar,
+            descripcion varchar,
+            precio float, 
+            existencia int, 
+            stockMinimo int, 
+            claveCategoria int
+    )
+    language sql
+    as $$
+            insert into Producto (nombreProducto, descripcionProducto, precio, existencia, stockMinimo, claveCategoria) 
+                values (nombre, descripcion, precio, existencia, stockMinimo, claveCategoria);
+    $$
+
+    call spInsertarProducto('Producto Generico', 'Producto prueba.', 12345, 18, 10, 1);
+    
+    ============================================================================
+    
+    create or replace procedure spActualizarProducto(
+            in nombre varchar,
+            in descripcion varchar,
+            in precio float, 
+            in existencia int, 
+            in stock int, 
+            in categoria int,
+            in id int
+    )
+    language sql
+    as $$
+            update Producto set nombreProducto=nombre, descripcionProducto=descripcion, precio=precio, existencia=existencia, stockMinimo=stock, claveCategoria=categoria
+                where idProducto=id;
+    $$
+
+    call spActualizarProducto('Categoria D', 'Categoria prueba actualizada.', 12345, 18, 10, 1, 5);
+    
+    ============================================================================
+    
+    create or replace procedure spEliminarProducto(in id int)
+    language sql
+    as $$
+            delete from Producto where idProducto=id;
+    $$
+
+    call spEliminarProducto(5);
+    
+    ============================================================================
+    
+    create or replace function seleccionarProducto(in id int) 
+    returns Table(
+            idProducto int,
+            nombreProducto varchar,
+            descripcionProducto varchar,
+            precio float, 
+            existencia int, 
+            stockMinimo int, 
+            claveCategoria int
+    )
+    language sql
+    as $function$
+                select * from Producto where idProducto=id;
+    $function$ 
+
+    select seleccionarProducto(1);
+    
+    
+    
+    */
+    
+    private static final String SQL_INSERT="call spInsertarProducto(?,?,?,?,?,?)";
+    private static final String SQL_UPDATE="call spActualizarProducto(?,?,?,?,?,?,?)";
+    private static final String SQL_DELETE="call spEliminarProducto(?)";
+    private static final String SQL_READ="select * from seleccionarProducto(?)";
+    private static final String SQL_READ_ALL="select * from seleccionaTodoProducto()";
     
     private Connection conexion;
     
@@ -59,26 +160,9 @@ public class ProductoDAO {
         }
     };
         
-        //SCRIPT DE BASE DE DATOS
-    /*
-        create table Categoria(
-                idCategoria serial primary key,
-                nombreCategoria varchar(50) not null,
-                descripcionCategoria varchar(50) not null	
-        );
-
-        create table Producto(
-                idProducto serial primary key,
-                nombreProducto varchar(50) not null,
-                descripcionProducto varchar(50) not null,
-                precio float not null,
-                existencia int not null,
-                stockMinimo int not null,
-                claveCategoria int not null,
-                foreign key(claveCategoria) references Categoria(idCategoria) on update cascade on delete cascade
-        );
+        
     
-    */
+    
     public void create(ProductoDTO dto) throws SQLException{
         conectar();
         PreparedStatement ps = null;
@@ -105,9 +189,9 @@ public class ProductoDAO {
     
     public void update(ProductoDTO dto) throws SQLException{
         conectar();
-        PreparedStatement ps = null;
+        CallableStatement ps = null;
         try{
-            ps = conexion.prepareStatement(SQL_UPDATE);
+            ps = conexion.prepareCall(SQL_UPDATE);
             ps.setString(1, dto.getEntidad().getNombreProducto());
             ps.setString(2, dto.getEntidad().getDescripcionProducto());
             ps.setFloat(3, dto.getEntidad().getPrecio());
@@ -126,9 +210,9 @@ public class ProductoDAO {
     
     public void delete(ProductoDTO dto) throws SQLException{
         conectar();
-        PreparedStatement ps = null;
+        CallableStatement ps = null;
         try{
-            ps = conexion.prepareStatement(SQL_DELETE);
+            ps = conexion.prepareCall(SQL_DELETE);
             ps.setInt(1, dto.getEntidad().getIdProducto());
             ps.executeUpdate();
         }finally{
@@ -141,11 +225,11 @@ public class ProductoDAO {
     
     public ProductoDTO read(ProductoDTO dto) throws SQLException{
         conectar();
-        PreparedStatement ps = null;
+        CallableStatement ps = null;
         ResultSet rs = null;
         
         try{
-            ps = conexion.prepareStatement(SQL_READ);
+            ps = conexion.prepareCall(SQL_READ);
             ps.setInt(1, dto.getEntidad().getIdProducto());
             rs = ps.executeQuery();
             List resultados = obtenerResultados(rs);
@@ -166,11 +250,11 @@ public class ProductoDAO {
     
     public List readAll() throws SQLException{
         conectar();
-        PreparedStatement ps = null;
+        CallableStatement ps = null;
         ResultSet rs = null;
         
         try{
-            ps = conexion.prepareStatement(SQL_READ_ALL);
+            ps = conexion.prepareCall(SQL_READ_ALL);
             rs = ps.executeQuery();
             List resultados = obtenerResultados(rs);
             if(resultados.size() > 0)

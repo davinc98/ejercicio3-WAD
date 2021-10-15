@@ -21,7 +21,15 @@ import java.util.logging.Logger;
  * @author J.Perez
  */
 public class CategoriaDAO {
-    /*PARA LA BASE DE DATOS: STORE PROCEDURES
+    /*
+    SCRIPT DE BASE DE DATOS
+        create table Categoria(
+                idCategoria serial primary key,
+                nombreCategoria varchar(50) not null,
+                descripcionCategoria varchar(50) not null	
+        );
+        
+    STORE PROCEDURES:
     ============================================================================
     
         create or replace function seleccionaTodoCategoria() returns Table(
@@ -59,7 +67,7 @@ public class CategoriaDAO {
             update Categoria set nombreCategoria=nombre, descripcionCategoria=descripcion where idCategoria=id;
     $$
 
-    call spActualizarCategoria(5,'Categoria D', 'Categoria prueba actualizada.');
+    call spActualizarCategoria('Categoria D', 'Categoria prueba actualizada.', 5);
     
     ============================================================================
     
@@ -83,8 +91,6 @@ public class CategoriaDAO {
     $function$ 
 
     select seleccionarCategoria(1);
-    
-    
     
     */
     private final String SQL_INSERT = "call spInsertarCategoria(?,?)";

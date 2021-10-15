@@ -43,27 +43,34 @@
                                 <a class="nav-link" href="CategoriaServlet?accion=nuevo">Nueva Categoria</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Listado de Productos</a>
+                                <a class="nav-link" href="ProductoServlet?accion=listaDeProductos">Listado de Productos</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Nuevo Producto</a>
+                                <a class="nav-link" href="ProductoServlet?accion=nuevo">Nuevo Producto</a>
                             </li>
-                            <!--        <li class="nav-item dropdown">
-                                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Dropdown link
-                                      </a>
-                                      <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                        <li><a class="dropdown-item" href="#">Action</a></li>
-                                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                                      </ul>
-                                    </li>-->
+
                         </ul>
                     </div>
                 </div>
             </nav>
 
 
+            <center>
+                <br/>
+                <br/>
+
+                <h1>EJERCICIO 3</h1>
+
+                <br/>
+                <br/>
+
+                <h2>Web Application Development</h2>
+                <h3>Perez Federico Jose Joel</h3>
+                
+                <br/>
+                
+                <h1>STORE PROCEDURES</h1>
+            </center>
 
         </div>
     </body>
