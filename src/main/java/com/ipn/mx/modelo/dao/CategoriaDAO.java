@@ -42,7 +42,7 @@ public class CategoriaDAO {
     )
     language sql
     as $$
-            insert into categoria (nombrecategoria, descripcioncategoria) values (nombre, descripcion);
+            insert into Categoria (nombreCategoria, descripcionCategoria) values (nombre, descripcion);
     $$
 
     call spInsertarCategoria('Categoria D', 'Categoria prueba.');
@@ -50,38 +50,47 @@ public class CategoriaDAO {
     ============================================================================
     
     create or replace procedure spActualizarCategoria(
-            in id int,
             in nombre varchar,
-            in descripcion varchar
+            in descripcion varchar,
+            in id int
     )
     language sql
     as $$
-            update categoria set nombrecategoria=nombre, descripcioncategoria=descripcion where idcategoria=id;
+            update Categoria set nombreCategoria=nombre, descripcionCategoria=descripcion where idCategoria=id;
     $$
 
     call spActualizarCategoria(5,'Categoria D', 'Categoria prueba actualizada.');
     
     ============================================================================
     
-    create or replace procedure spEliminarCategoria(
-            id int
-    )
+    create or replace procedure spEliminarCategoria(in id int)
     language sql
     as $$
-            delete from categoria where idcategoria=id;
+            delete from categoria where idCategoria=id;
     $$
 
     call spEliminarCategoria(5);
     
     ============================================================================
     
+    create or replace function seleccionarCategoria(in id int) 
+    returns Table(idCategoria integer,
+                nombrecategoria character varying,
+                descripcioncategoria character varying) 
+    language sql
+    as $function$
+                select * from Categoria where idCategoria=id;
+    $function$ 
+
+    select seleccionarCategoria(1);
+    
     
     
     */
-    private final String SQL_INSERT = "";
-    private final String SQL_UPDATE = "update Categoria set nombreCategoria = ?, descripcionCategoria = ? where idCategoria = ?";
-    private final String SQL_DELETE = "delete from Categoria where idCategoria = ?";
-    private final String SQL_READ = "select idCategoria,nombreCategoria,descripcionCategoria from Categoria where idCategoria = ?";
+    private final String SQL_INSERT = "call spInsertarCategoria(?,?)";
+    private final String SQL_UPDATE = "call  spActualizarCategoria(?,?,?)";
+    private final String SQL_DELETE = "call spEliminarCategoria(?)";
+    private final String SQL_READ = "select * from seleccionarCategoria(?)";
     private final String SQL_READ_ALL = "select * from seleccionaTodoCategoria()";
     
     private Connection conexion;
@@ -226,15 +235,15 @@ public class CategoriaDAO {
         CategoriaDAO dao = new CategoriaDAO();
         CategoriaDTO dto = new CategoriaDTO();
         
-//        dto.getEntidad().setIdCategoria(2);
+        dto.getEntidad().setIdCategoria(2);
         //dto.getEntidad().setNombreCategoria("Computo");
         //dto.getEntidad().setDescripcionCategoria("Cosas para la escuela");
         
         try {
             //dao.create(dto);
             //dao.update(dto);
-            System.out.println(dao.readAll());
-            //System.out.println(dao.read(dto));
+//            System.out.println(dao.readAll());
+            System.out.println(dao.read(dto));
             
 //            dao.delete(dto);
         } catch (SQLException ex) {

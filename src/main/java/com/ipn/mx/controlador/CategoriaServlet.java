@@ -8,7 +8,6 @@ package com.ipn.mx.controlador;
 import com.ipn.mx.modelo.dao.CategoriaDAO;
 import com.ipn.mx.modelo.dto.CategoriaDTO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.logging.Level;
@@ -157,7 +156,7 @@ public class CategoriaServlet extends HttpServlet {
         RequestDispatcher vista = request.getRequestDispatcher("/categorias/categoriasForm.jsp");
 
         try {
-            dao.read(dto);
+            dto = dao.read(dto);
             request.setAttribute("categoria", dto);
             vista.forward(request, response);
 
@@ -174,7 +173,7 @@ public class CategoriaServlet extends HttpServlet {
         RequestDispatcher vista = request.getRequestDispatcher("/categorias/datosCategoria.jsp");
 
         try {
-            dao.read(dto);
+            dto = dao.read(dto);
             request.setAttribute("categoria", dto);
             vista.forward(request, response);
 
@@ -187,12 +186,21 @@ public class CategoriaServlet extends HttpServlet {
         CategoriaDAO dao = new CategoriaDAO();
         CategoriaDTO dto = new CategoriaDTO();
         
+        if(!request.getParameter("txtIdCategoria").equals(""))
+            dto.getEntidad().setIdCategoria(Integer.parseInt(request.getParameter("txtIdCategoria")));
+        
         dto.getEntidad().setNombreCategoria(request.getParameter("txtNombreCategoria"));
         dto.getEntidad().setDescripcionCategoria(request.getParameter("txtDescripcionCategoria"));
         
         try {
-            dao.create(dto);            
-            request.setAttribute("mensaje", "Categoria agregada con exito.");
+            
+            if(!request.getParameter("txtIdCategoria").equals("")){//CREAR
+                dao.update(dto);            
+                request.setAttribute("mensaje", "Categoria actualizada con exito.");
+            }else{
+                dao.create(dto);            
+                request.setAttribute("mensaje", "Categoria agregada con exito.");
+            }            
             
             listaDeCategorias(request, response);
         } catch (SQLException ex) {
