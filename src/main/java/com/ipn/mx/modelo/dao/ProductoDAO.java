@@ -37,6 +37,29 @@ public class ProductoDAO {
                 foreign key(claveCategoria) references Categoria(idCategoria) on update cascade on delete cascade
         );
     
+    insert into Producto (nombreProducto, descripcionProducto, precio, existencia, stockMinimo, claveCategoria) 
+                values ('Producto', 'Descripcion producto.', 5000, 100, 10, 2);
+    insert into Producto (nombreProducto, descripcionProducto, precio, existencia, stockMinimo, claveCategoria) 
+                values ('Producto', 'Descripcion producto.', 5000, 100, 10, 2);
+    insert into Producto (nombreProducto, descripcionProducto, precio, existencia, stockMinimo, claveCategoria) 
+                values ('Producto', 'Descripcion producto.', 5000, 100, 10, 2);
+    insert into Producto (nombreProducto, descripcionProducto, precio, existencia, stockMinimo, claveCategoria) 
+                values ('Producto', 'Descripcion producto.', 5000, 100, 10, 2);
+    insert into Producto (nombreProducto, descripcionProducto, precio, existencia, stockMinimo, claveCategoria) 
+                values ('Producto', 'Descripcion producto.', 5000, 100, 10, 2);
+    insert into Producto (nombreProducto, descripcionProducto, precio, existencia, stockMinimo, claveCategoria) 
+                values ('Producto', 'Descripcion producto.', 5000, 100, 10, 2);
+    insert into Producto (nombreProducto, descripcionProducto, precio, existencia, stockMinimo, claveCategoria) 
+                values ('Producto', 'Descripcion producto.', 5000, 100, 10, 2);
+    insert into Producto (nombreProducto, descripcionProducto, precio, existencia, stockMinimo, claveCategoria) 
+                values ('Producto', 'Descripcion producto.', 5000, 100, 10, 2);
+    insert into Producto (nombreProducto, descripcionProducto, precio, existencia, stockMinimo, claveCategoria) 
+                values ('Producto', 'Descripcion producto.', 5000, 100, 10, 2);
+    insert into Producto (nombreProducto, descripcionProducto, precio, existencia, stockMinimo, claveCategoria) 
+                values ('Producto', 'Descripcion producto.', 5000, 100, 10, 2);
+    
+    
+    
     STORE PROCEDURES:
     ============================================================================
     

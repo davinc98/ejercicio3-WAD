@@ -24,23 +24,48 @@
 
 
 
+            
+            <br/>
+            <h1>Categorias</h1>
+            <br/>
+            <br/>
 
+            <div class="row">
+                <div class="col col-lg-2">
+                    <h4 class="card-title">
+                        <a href="CategoriaServlet?accion=nuevo" class="btn btn-outline-success">Crear Categoria</a>
+                    </h4>
+                </div>
+                <div class="col">
+                    
+                </div>
+                <div class="col col-lg-2">
+                    <h4 class="card-title">
+                        <a href="CategoriaServlet?accion=graficar" class="btn btn-outline-primary" target="_blank">Mostrar Grafica</a>
+                    </h4>
+                </div>                 
+                <div class="col col-lg-2">
+                    <h4 class="card-title">
+                        <a href="CategoriaServlet?accion=verReporte" class="btn btn-outline-danger" target="_blank">Mostrar Reporte</a>
+                    </h4>
+                </div>
+            </div>
+
+            <br/>
+            
             <div class="card border-primary">
                 <div class="card-header text-center">
                     Categorias
                 </div>
                 <div class="card-body">
-                    <h4 class="card-title">
-                        <a href="CategoriaServlet?accion=nuevo" class="btn btn-outline-success">Crear Categoria</a>
-                    </h4>
-                    
+
                     <c:if test="${mensaje != null}">
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             <strong>${mensaje}</strong>
                             <button class="btn-close" data-bs-dismiss="alert" aria-lbel="Close"></button>
                         </div>
                     </c:if>
-                    
+
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -53,30 +78,30 @@
                             </tr>
                         </thead>
                         <c:forEach var="dto" items="${listaDeCategorias}">
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <a href="CategoriaServlet?accion=ver&id=<c:out value="${ dto.entidad.idCategoria }"/>" class="btn btn-outline-warning">
-                                        <c:out value="${ dto.entidad.idCategoria }"/>
-                                    </a>
-                                </td>
-                                <td>
-                                    <c:out value="${ dto.entidad.nombreCategoria }"/>
-                                </td>
-                                <td>
-                                    <c:out value="${ dto.entidad.descripcionCategoria }"/>
-                                </td>
-                                <td>
-                                    <a href="CategoriaServlet?accion=eliminar&id=<c:out value="${ dto.entidad.idCategoria }"/>" class="btn btn-outline-danger">Eliminar</a>
-                                </td>
-                                <td>
-                                    <a href="CategoriaServlet?accion=actualizar&id=<c:out value="${ dto.entidad.idCategoria }"/>" class="btn btn-outline-success">Actualizar</a>
-                                </td>
-                                <td>
-                                    <a href="#" class="btn btn-outline-info">Reporte</a>
-                                </td>
-                            </tr>
-                        </tbody>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <a href="CategoriaServlet?accion=ver&id=<c:out value="${ dto.entidad.idCategoria }"/>" class="btn btn-outline-warning">
+                                            <c:out value="${ dto.entidad.idCategoria }"/>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <c:out value="${ dto.entidad.nombreCategoria }"/>
+                                    </td>
+                                    <td>
+                                        <c:out value="${ dto.entidad.descripcionCategoria }"/>
+                                    </td>
+                                    <td>
+                                        <a href="CategoriaServlet?accion=eliminar&id=<c:out value="${ dto.entidad.idCategoria }"/>" class="btn btn-outline-danger">Eliminar</a>
+                                    </td>
+                                    <td>
+                                        <a href="CategoriaServlet?accion=actualizar&id=<c:out value="${ dto.entidad.idCategoria }"/>" class="btn btn-outline-success">Actualizar</a>
+                                    </td>
+                                    <td>
+                                        <a href="#" class="btn btn-outline-info">Reporte</a>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </c:forEach>
                     </table>
                 </div>

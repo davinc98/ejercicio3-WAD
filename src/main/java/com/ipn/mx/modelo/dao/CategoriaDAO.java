@@ -28,6 +28,12 @@ public class CategoriaDAO {
                 nombreCategoria varchar(50) not null,
                 descripcionCategoria varchar(50) not null	
         );
+    
+    
+    insert into Categoria (nombreCategoria, descripcionCategoria) values ('Categoria A', 'Descripcion de la categoria');
+    insert into Categoria (nombreCategoria, descripcionCategoria) values ('Categoria B', 'Descripcion de la categoria');
+    insert into Categoria (nombreCategoria, descripcionCategoria) values ('Categoria C', 'Descripcion de la categoria');
+    insert into Categoria (nombreCategoria, descripcionCategoria) values ('Categoria D', 'Descripcion de la categoria');
         
     STORE PROCEDURES:
     ============================================================================
@@ -115,7 +121,7 @@ public class CategoriaDAO {
 //        }
 //    };
     
-    private void conectar(){
+    public Connection conectar(){
         String user = "iewcorrxmgvsmo";
         String pwd = "a7750a2841c65540faa134f8c25978da1ea8dd72aaca9a853f0c30f2ac424fb7";
         String url="jdbc:postgresql://ec2-44-198-24-0.compute-1.amazonaws.com:5432/d5luuaqm2h0rv1";
@@ -127,6 +133,7 @@ public class CategoriaDAO {
         }catch(Exception e){
             e.printStackTrace();
         }
+        return conexion;
     };
     
     public void create(CategoriaDTO dto) throws SQLException{

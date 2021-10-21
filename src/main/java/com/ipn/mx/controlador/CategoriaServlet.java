@@ -6,18 +6,31 @@
 package com.ipn.mx.controlador;
 
 import com.ipn.mx.modelo.dao.CategoriaDAO;
+import com.ipn.mx.modelo.dao.GraficaDAO;
 import com.ipn.mx.modelo.dto.CategoriaDTO;
+import com.ipn.mx.modelo.dto.GraficaDTO;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperRunManager;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtils;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.data.general.PieDataset;
 
 /**
  *
@@ -210,11 +223,51 @@ public class CategoriaServlet extends HttpServlet {
     }
 
     private void mostrarReporte(HttpServletRequest request, HttpServletResponse response) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        CategoriaDAO dao = new CategoriaDAO();
+        try {
+            ServletOutputStream sos = response.getOutputStream();
+            File reporte = new File(getServletConfig().getServletContext().getRealPath("/reportes/ReporteGeneral.jasper"));
+            byte[] b = JasperRunManager.runReportToPdf(reporte.getPath(), null, dao.conectar());
+            response.setContentType("application/pdf");
+            response.setContentLength(b.length);
+            
+            sos.write(b,0,b.length);
+            sos.flush();
+            sos.close();
+            
+        } catch (IOException ex) {
+            Logger.getLogger(CategoriaServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JRException ex) {
+            Logger.getLogger(CategoriaServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void mostrarGrafica(HttpServletRequest request, HttpServletResponse response) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        JFreeChart grafica = ChartFactory.createPieChart("Productos por Categoria", 
+                obtenerGraficaProductosPorCategoria(), true, true, Locale.getDefault());        
+        String archivo = getServletConfig().getServletContext().getRealPath("/grafica.png");
+        try {
+            ChartUtils.saveChartAsPNG(new File(archivo), grafica, 500, 500);
+            RequestDispatcher vista = request.getRequestDispatcher("grafica.jsp");
+            vista.forward(request, response);
+        } catch (IOException | ServletException ex) {
+            Logger.getLogger(CategoriaServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private PieDataset obtenerGraficaProductosPorCategoria(){
+        DefaultPieDataset dsPie = new DefaultPieDataset();
+        GraficaDAO dao = new GraficaDAO();
+        try {
+            List datos = dao.graficarProductosPorCategoria();
+            for (int i = 0; i < datos.size(); i++) {
+                GraficaDTO dto = (GraficaDTO) datos.get(i);
+                dsPie.setValue(dto.getNombreCategoria(), dto.getCantidad());
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CategoriaServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return dsPie;
     }
 
 }
