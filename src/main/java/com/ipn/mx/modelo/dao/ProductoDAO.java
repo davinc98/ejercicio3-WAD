@@ -183,8 +183,6 @@ public class ProductoDAO {
         }
     };
         
-        
-    
     
     public void create(ProductoDTO dto) throws SQLException{
         conectar();
@@ -323,9 +321,9 @@ public class ProductoDAO {
         dto.getEntidad().setClaveCategoria(1);
         
         try {
-            dao.create(dto);
+//            dao.create(dto);
             //dao.update(dto);
-            //System.out.println(dao.readAll());
+            System.out.println(dao.readAll());
             //System.out.println(dao.read(dto));
             //dao.delete(dto);
         } catch (SQLException ex) {

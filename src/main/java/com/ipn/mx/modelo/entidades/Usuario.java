@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Usuario implements Serializable{
-    private int idAlumno;
+    private int idUsuario;
     private String nombre;
     private String paterno;
     private String materno;

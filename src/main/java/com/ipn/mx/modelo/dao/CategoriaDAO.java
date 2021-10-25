@@ -146,8 +146,7 @@ public class CategoriaDAO {
             ps.executeUpdate();
         }finally{
             if(ps != null)
-                ps.close();
-            
+                ps.close();            
             if (conexion != null)
                 conexion.close();
         }
