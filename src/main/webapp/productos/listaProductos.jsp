@@ -105,9 +105,9 @@
                                     <td>
                                         <a href="ProductoServlet?accion=actualizar&id=<c:out value="${ dto.entidad.idProducto }"/>" class="btn btn-outline-success">Actualizar</a>
                                     </td>
-                                    <td>
+<!--                                    <td>
                                         <a href="#" class="btn btn-outline-info">Reporte</a>
-                                    </td>
+                                    </td>-->
                                 </tr>
                             </tbody>
                         </c:forEach>

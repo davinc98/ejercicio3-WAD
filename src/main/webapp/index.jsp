@@ -48,11 +48,11 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="ProductoServlet?accion=nuevo">Nuevo Producto</a>
                             </li>
-                            <li class="nav-item">
+<!--                            <li class="nav-item">
                                 <a class="nav-link" href="UsuarioServlet?accion=listaDeUsuarios">Listado de Usuarios</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="UsuarioServlet?accion=nuevo">Nuevo Usuario</a>
+                                <a class="nav-link" href="UsuarioServlet?accion=nuevo">Nuevo Usuario</a>-->
                             </li>
                         </ul>
                     </div>

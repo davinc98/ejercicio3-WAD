@@ -232,10 +232,10 @@ public class ProductoServlet extends HttpServlet {
     }
 
     private void mostrarReporte(HttpServletRequest request, HttpServletResponse response) {
-        CategoriaDAO dao = new CategoriaDAO();
+        ProductoDAO dao = new ProductoDAO();
         try {
             ServletOutputStream sos = response.getOutputStream();
-            File reporte = new File(getServletConfig().getServletContext().getRealPath("/reportes/ReporteGeneral.jasper"));
+            File reporte = new File(getServletConfig().getServletContext().getRealPath("/reportes/ReporteGeneralProductos.jasper"));
             byte[] b = JasperRunManager.runReportToPdf(reporte.getPath(), null, dao.conectar());
             response.setContentType("application/pdf");
             response.setContentLength(b.length);
