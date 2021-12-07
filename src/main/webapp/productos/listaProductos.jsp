@@ -21,6 +21,44 @@
         <div class="container">
 
 
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">
+                        <img src="/imagenes/bootstrap-logo.svg" alt="" width="30" height="24" class="d-inline-block align-text-top">
+                        J. Perez
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="../index.jsp">Inicio</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="CategoriaServlet?accion=listaDeCategorias">Listado De Categorias</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="CategoriaServlet?accion=nuevo">Nueva Categoria</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="ProductoServlet?accion=listaDeProductos">Listado de Productos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="ProductoServlet?accion=nuevo">Nuevo Producto</a>
+                            </li>
+                            <!--                            <li class="nav-item">
+                                                            <a class="nav-link" href="UsuarioServlet?accion=listaDeUsuarios">Listado de Usuarios</a>
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            <a class="nav-link" href="UsuarioServlet?accion=nuevo">Nuevo Usuario</a>-->
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            
+            <h1>Productos</h1>
 
 
             <div class="row">
@@ -70,7 +108,7 @@
                                 <th>Categoria (Clave)</th>
                                 <th>Eliminar</th>
                                 <th>Actualizar</th>
-                                <th>Reporte</th>
+                                <!--<th>Reporte</th>-->
                             </tr>
                         </thead>
                         <c:forEach var="dto" items="${listaDeProductos}">

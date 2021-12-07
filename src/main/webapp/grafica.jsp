@@ -17,7 +17,8 @@
         <title>Grafica Categorias</title>
     </head>
     <body>
-        <h1>Categorias</h1>
+        <h1></h1>
+        <br/>
 
         <div class="container">
 
@@ -27,7 +28,7 @@
 
             <div class="card bg-light">
                 <div class="card-header">
-                    <h3 class="text-center">Grafico</h3>
+                    <h3 class="text-center">Categorias</h3>
                 </div>
                 <div class="card-body">
                     <center>
