@@ -107,7 +107,7 @@ public class CategoriaDAO {
     
     private Connection conexion;
     
-//    private void conectar(){
+//    public Connection conectar(){
 //        String user = "postgres";
 //        String pwd = "admin";
 //        String url="jdbc:postgresql://localhost:5432/Base3CM13";
@@ -119,7 +119,8 @@ public class CategoriaDAO {
 //        }catch(Exception e){
 //            e.printStackTrace();
 //        }
-//    };
+//        return conexion;
+//    }
     
     public Connection conectar(){
         String user = "iewcorrxmgvsmo";
@@ -134,7 +135,7 @@ public class CategoriaDAO {
             e.printStackTrace();
         }
         return conexion;
-    };
+    }
     
     public void create(CategoriaDTO dto) throws SQLException{
         conectar();

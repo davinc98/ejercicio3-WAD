@@ -5,8 +5,14 @@
  */
 package com.ipn.mx.controlador;
 
+import com.ipn.mx.modelo.dao.UsuarioDAO;
+import com.ipn.mx.modelo.dto.UsuarioDTO;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -32,17 +38,39 @@ public class UsuarioServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet UsuarioServlet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet UsuarioServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+
+        String accion = request.getParameter("accion");
+
+        if (accion.equals("listaDeUsuarios")) {
+            listaDeUsuarios(request, response);
+        } else {
+            if (accion.equals("nuevo")) {
+                agregarUsuario(request, response);
+            } else {
+                if (accion.equals("eliminar")) {
+                    eliminarUsuario(request, response);
+                } else {
+                    if (accion.equals("actualizar")) {
+                        actualizarUsuario(request, response);
+                    } else {
+                        if (accion.equals("guardar")) {
+                            almacenarUsuario(request, response);
+                        } else {
+                            if (accion.equals("ver")) {
+                                mostrarUsuario(request, response);
+                            } else {
+                                if (accion.equals("verReporte")) {
+                                    mostrarReporte(request, response);
+                                } else {
+                                    if (accion.equals("graficar")) {
+                                        mostrarGrafica(request, response);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -85,4 +113,114 @@ public class UsuarioServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    
+    private void listaDeUsuarios(HttpServletRequest request, HttpServletResponse response) {
+        UsuarioDAO dao = new UsuarioDAO();
+        try {
+            Collection lista = dao.readAll();
+            request.setAttribute("listaDeUsuarios", lista);
+
+            RequestDispatcher rd = request.getRequestDispatcher("/usuarios/listaUsuarios.jsp");
+            rd.forward(request, response);
+        } catch (SQLException | ServletException | IOException ex) {
+            Logger.getLogger(ProductoServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void agregarUsuario(HttpServletRequest request, HttpServletResponse response) {
+        RequestDispatcher vista = request.getRequestDispatcher("/usuarios/usuariosForm.jsp");
+        try {
+            vista.forward(request, response);
+        } catch (ServletException | IOException ex) {
+            Logger.getLogger(ProductoServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void eliminarUsuario(HttpServletRequest request, HttpServletResponse response) {
+        UsuarioDAO dao = new UsuarioDAO();
+        UsuarioDTO dto = new UsuarioDTO();
+        dto.getEntidad().setIdUsuario(Integer.parseInt(request.getParameter("id")));
+
+        try {
+            dao.delete(dto);
+            listaDeUsuarios(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductoServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void actualizarUsuario(HttpServletRequest request, HttpServletResponse response) {
+        UsuarioDAO dao = new UsuarioDAO();
+        UsuarioDTO dto = new UsuarioDTO();
+        dto.getEntidad().setIdUsuario(Integer.parseInt(request.getParameter("id")));
+
+        RequestDispatcher vista = request.getRequestDispatcher("/usuarios/usuariosForm.jsp");
+
+        try {
+            dto = dao.read(dto);
+            request.setAttribute("usuario", dto);
+            vista.forward(request, response);
+
+        } catch (SQLException | ServletException | IOException ex) {
+            Logger.getLogger(ProductoServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void mostrarUsuario(HttpServletRequest request, HttpServletResponse response) {
+        UsuarioDAO dao = new UsuarioDAO();
+        UsuarioDTO dto = new UsuarioDTO();
+        dto.getEntidad().setIdUsuario(Integer.parseInt(request.getParameter("id")));
+
+        RequestDispatcher vista = request.getRequestDispatcher("/usuarios/datosUsuario.jsp");
+
+        try {
+            dto = dao.read(dto);
+            request.setAttribute("usuario", dto);
+            vista.forward(request, response);
+
+        } catch (SQLException | ServletException | IOException ex) {
+            Logger.getLogger(ProductoServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void almacenarUsuario(HttpServletRequest request, HttpServletResponse response) {
+        UsuarioDAO dao = new UsuarioDAO();
+        UsuarioDTO dto = new UsuarioDTO();
+
+        if (!request.getParameter("txtIdUsuario").equals("")) {
+            dto.getEntidad().setIdUsuario(Integer.parseInt(request.getParameter("txtIdUsuario")));
+        }
+
+        dto.getEntidad().setNombre(request.getParameter("txtNombre"));
+        dto.getEntidad().setPaterno(request.getParameter("txtPaterno"));
+        dto.getEntidad().setMaterno(request.getParameter("txtMaterno"));
+        dto.getEntidad().setNombreUsuario(request.getParameter("txtNombreUsuario"));
+        dto.getEntidad().setClaveUsuario(request.getParameter("txtClaveUsuario"));
+        dto.getEntidad().setEmail(request.getParameter("txtEmail"));
+        dto.getEntidad().setTipoUsuario(request.getParameter("txtTipoUsuario"));
+
+        try {
+
+            if (!request.getParameter("txtIdUsuario").equals("")) {//CREAR
+                dao.update(dto);
+                request.setAttribute("mensaje", "Usuario actualizado con exito.");
+            } else {
+                dao.create(dto);
+                request.setAttribute("mensaje", "Usuario creado con exito.");
+            }
+
+            listaDeUsuarios(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductoServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    private void mostrarReporte(HttpServletRequest request, HttpServletResponse response) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void mostrarGrafica(HttpServletRequest request, HttpServletResponse response) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
