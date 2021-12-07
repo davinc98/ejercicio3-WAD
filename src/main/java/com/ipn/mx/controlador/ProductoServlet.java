@@ -5,19 +5,36 @@
  */
 package com.ipn.mx.controlador;
 
+import com.ipn.mx.modelo.dao.CategoriaDAO;
+import com.ipn.mx.modelo.dao.GraficaDAO;
 import com.ipn.mx.modelo.dao.ProductoDAO;
+import com.ipn.mx.modelo.dto.GraficaDTO;
 import com.ipn.mx.modelo.dto.ProductoDTO;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperRunManager;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtils;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.data.general.PieDataset;
 
 /**
  *
@@ -215,11 +232,59 @@ public class ProductoServlet extends HttpServlet {
     }
 
     private void mostrarReporte(HttpServletRequest request, HttpServletResponse response) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        CategoriaDAO dao = new CategoriaDAO();
+        try {
+            ServletOutputStream sos = response.getOutputStream();
+            File reporte = new File(getServletConfig().getServletContext().getRealPath("/reportes/ReporteGeneral.jasper"));
+            byte[] b = JasperRunManager.runReportToPdf(reporte.getPath(), null, dao.conectar());
+            response.setContentType("application/pdf");
+            response.setContentLength(b.length);
+            
+            sos.write(b,0,b.length);
+            sos.flush();
+            sos.close();
+            
+        } catch (IOException ex) {
+            Logger.getLogger(CategoriaServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JRException ex) {
+            Logger.getLogger(CategoriaServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void mostrarGrafica(HttpServletRequest request, HttpServletResponse response) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        JFreeChart graficaProductos = ChartFactory.createBarChart(
+         "Productos",           
+         "",            
+         "Existencia",            
+         obtenerExistenciaProductos(),          
+         PlotOrientation.VERTICAL,           
+         true, true, false);
+        
+        String archivo = getServletConfig().getServletContext().getRealPath("/graficaProductos.png");
+        try {
+            ChartUtils.saveChartAsPNG(new File(archivo), graficaProductos, 1000, 500);
+            RequestDispatcher vista = request.getRequestDispatcher("graficaProductos.jsp");
+            vista.forward(request, response);
+        } catch (IOException | ServletException ex) {
+            Logger.getLogger(CategoriaServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private CategoryDataset obtenerExistenciaProductos(){
+        DefaultCategoryDataset dataset  = new DefaultCategoryDataset();
+        ProductoDAO dao = new ProductoDAO();
+        try {
+            List datos = dao.readAll();
+            for (int i = 0; i < datos.size(); i++) {
+                ProductoDTO dto = (ProductoDTO) datos.get(i);
+                dataset.addValue(dto.getEntidad().getExistencia(), "("+dto.getEntidad().getIdProducto()+") "+dto.getEntidad().getNombreProducto(), "Producto");
+                //dataset.addValue(dto.getEntidad().getExistencia(),"Producto", "("+dto.getEntidad().getIdProducto()+") "+dto.getEntidad().getNombreProducto());
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CategoriaServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return dataset;
     }
 
 }
